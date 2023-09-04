@@ -1,0 +1,91 @@
+override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val submitButton = binding.submitButton
+        radioGroup.removeAllViews() // Clear any existing radio buttons
+
+        // Create radio buttons based on the answers for the current question
+        for (i in viewModel.currentQuestion.answers.indices) {
+            val radioButton = RadioButton(requireContext())
+            radioButton.text = viewModel.currentQuestion.answers[i]
+            radioButton.id = i
+            radioGroup.addView(radioButton)
+        }
+
+        submitButton.setOnClickListener {
+            val checkedRadioButtonId = radioGroup.checkedRadioButtonId
+
+            if (checkedRadioButtonId == -1) {
+                // No answer selected, show a toast
+                Toast.makeText(requireContext(), "Please select an answer", Toast.LENGTH_LONG)
+                    .show()
+            } else {
+                // An answer is selected
+                val answerIndex = when (checkedRadioButtonId) {
+                    R.id.first_answer -> 0
+                    R.id.second_answer -> 1
+                    R.id.third_answer -> 2
+                    R.id.fourth_answer -> 3
+                    else -> -1 // Handle other cases if necessary
+                }
+
+                if (viewModel.isAnswerCorrect(answerIndex)) {
+                    // Handle correct answer logic here
+                    viewModel.moveToNextQuestion()
+                    // Clear the checked state of the RadioGroup
+                    radioGroup.clearCheck()
+                } else {
+                    // Handle incorrect answer logic here
+                    view?.findNavController()
+                        ?.navigate(R.id.action_gameFragment_to_gameOverFragment)
+                }
+            }
+        }
+
+// Populate radio buttons with shuffled answers
+        viewModel.shuffleAnswers()
+        val shuffledAnswers = viewModel.getCurrentAnswers()
+        for (i in shuffledAnswers.indices) {
+            val radioButton = radioGroup.getChildAt(i) as RadioButton
+            radioButton.text = shuffledAnswers[i]
+
+
+        }
+        //    private fun handleSubmission() {
+//        // Check for game over here again
+//        if (viewModel.isGameOver()) {
+//            view?.findNavController()?.navigate(R.id.action_gameFragment_to_gameWonFragment)
+//            return
+//        }
+//
+//        val checkedId = binding.questionRadioGroup.checkedRadioButtonId
+//
+//        // Do nothing if nothing is checked (id == -1)
+//        if (-1 != checkedId) {
+//            val answerIndex = when (checkedId) {
+//                R.id.first_answer -> 0
+//                R.id.second_answer -> 1
+//                R.id.third_answer -> 2
+//                R.id.fourth_answer -> 3
+//                else -> -1
+//            }
+//
+//            if (answerIndex != -1) {
+//                // Check if the selected answer is correct
+//                if (viewModel.isAnswerCorrect(answerIndex)) {
+//                    // Handle correct answer logic here
+//                    viewModel.moveToNextQuestion()
+//                    binding.invalidateAll()
+//                } else {
+//                    // Handle incorrect answer logic here
+//                    view?.findNavController()?.navigate(R.id.action_gameFragment_to_gameOverFragment)
+//                }
+//            } }
+//         else {
+//            // Handle the case where none of the RadioButtons is checked
+//            Toast.makeText(requireContext(), "Please select an answer", Toast.LENGTH_LONG).show()
+//        }
+//    }
+
+
+    }

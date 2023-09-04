@@ -1,0 +1,58 @@
+  // Set up radio buttons
+        radioGroup = binding.questionRadioGroup
+
+
+        // Iterate over the radio buttons and set their text values
+        for (i in 0 until radioGroup.childCount) {
+            val radioButton = radioGroup.getChildAt(i) as RadioButton
+            radioButton.text = viewModel.currentQuestion.answers[i]
+        }
+
+        viewModel.questionsLiveData.observe(viewLifecycleOwner, Observer { questions ->
+            // Update your UI with the new list of questions
+            // For example, if you want to update a TextView with a question text:
+            binding.questionText.text =
+                questions.getOrNull(viewModel.currentQuestionIndex)?.text.toString()
+        })
+
+        viewModel.answersLiveData.observe(viewLifecycleOwner) { answers ->
+            // Update your UI with the new list of answers
+            // For example, if you want to update a RadioGroup with answer options:
+            radioGroup.removeAllViews() // Clear previous options
+            answers.forEach { answer ->
+                val radioButton = RadioButton(requireContext())
+                radioButton.text = answer
+                radioGroup.addView(radioButton)
+            }
+        }
+
+        //Observe game over event
+        viewModel.isGameOverLiveData.observe(viewLifecycleOwner) { isGameOver ->
+            if (isGameOver) {
+                view?.findNavController()?.navigate(R.id.action_gameFragment_to_gameOverFragment)
+            }
+        }
+
+
+//        viewModel.questionsLiveData.observe(viewLifecycleOwner, Observer{
+//            questions ->
+//            val question = questions.firstOrNull()?.text ?: "No questions available"
+//            binding.questionText.text = question
+//            Log.d("GameFragment", "QuestionText updated to: $question")
+//
+//        })
+
+//        viewModel.questionsLiveData.observe(viewLifecycleOwner, Observer{
+//            questions -> binding.questionText.text = questions.get(viewModel.questionIndex).text
+//
+//        })
+//
+
+//        viewModel.eventGameFinish.observe(viewLifecycleOwner, Observer {
+//            hasFinished ->
+//            if(hasFinished){
+//                val action = GameFragmentDirections.actionGameFragmentToGameWonFragment()
+//                findNavController().navigate(action)
+//                viewModel.onGameFinishComplete()
+//            }
+//        })

@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">trivia</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="PLAY"> PLAY </string>
+    <string name="submit_btn">SUBMIT\n</string>
+    <string name="try_again">TRY AGAIN?\n</string>
+    <string name="next_match">NEXT MATCH\n</string>
+    <string name="about_text">Android Trivia will help remind you of important concepts you have learned and will learn in Android development.\n\nConsider modifying the questions and graphics to make this game your own!</string>
+    <string name="title_about_trivia">About Trivia</string>
+    <string name="about">ABOUT</string>
+    <string name="share_success_text">I mastered #UdacityAndroidTrivia with %1$d/%2$d correct questions!</string>
+
+</resources>

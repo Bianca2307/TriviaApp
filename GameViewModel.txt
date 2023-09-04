@@ -1,0 +1,184 @@
+   //LiveData for questions and answers
+//
+    private var _questionsLiveData = MutableLiveData<List<Question>>()
+    val questionsLiveData:LiveData<List<Question>> = _questionsLiveData
+
+    private var _answersLiveData = MutableLiveData<List<String>>()
+    val answersLiveData:LiveData<List<String>> = _answersLiveData
+
+    private lateinit var currentAnswers: List<String>
+    private var correctAnswerIndex: Int = -1
+
+    var currentQuestionIndex = 0
+
+    val currentQuestion:Question
+        get()=questions[currentQuestionIndex]
+
+    val isGameOver:Boolean
+        get()= currentQuestionIndex >= questions.size - 1
+
+    // The first answer is the correct one.  We randomize the answers before showing the text.
+    // All questions must have four answers.  We'd want these to contain references to string
+    // resources so we could internationalize. (or better yet, not define the questions in code...)
+   private val questions:MutableList<Question> = mutableListOf(
+        Question(
+            text = "What is Android Jetpack?",
+            answers = listOf("all of these", "tools", "documentation", "libraries"),
+            0
+        ),
+        Question(
+            text = "Base class for Layout?",
+            answers = listOf("ViewGroup", "ViewSet", "ViewCollection", "ViewRoot"),
+            0
+        ),
+        Question(
+            text = "Layout for complex Screens?",
+            answers = listOf("ConstraintLayout", "GridLayout", "LinearLayout", "FrameLayout"),
+            0
+        ),
+        Question(
+            text = "Pushing structured data into a Layout?",
+            answers = listOf("Data Binding", "Data Pushing", "Set Text", "OnClick"),
+            0
+        ),
+        Question(
+            text = "Inflate layout in fragments?",
+            answers = listOf("onCreateView", "onViewCreated", "onCreateLayout", "onInflateLayout"),
+            0
+        ),
+        Question(
+            text = "Build system for Android?",
+            answers = listOf("Gradle", "Graddle", "Grodle", "Groyle"),
+            0
+        ),
+        Question(
+            text = "Android vector format?",
+            answers = listOf(
+                "VectorDrawable",
+                "AndroidVectorDrawable",
+                "DrawableVector",
+                "AndroidVector"
+            ),
+            0
+        ),
+        Question(
+            text = "Android Navigation Component?",
+            answers = listOf("NavController", "NavCentral", "NavMaster", "NavSwitcher"),
+            0
+        ),
+        Question(
+            text = "Registers app with launcher?",
+            answers = listOf("intent-filter", "app-registry", "launcher-registry", "app-launcher"),
+            0
+        ),
+        Question(
+            text = "Mark a layout for Data Binding?",
+            answers = listOf("<layout>", "<binding>", "<data-binding>", "<dbinding>"),
+            0
+        )
+
+
+    )
+init{
+    _questionsLiveData.value = questions
+
+}
+
+//    private val _eventGameFinish = MutableLiveData<Boolean>()
+//    val eventGameFinish:LiveData<Boolean>
+//        get() = _eventGameFinish
+    //    lateinit var answers:MutableList<String>
+//    var questionIndex = 0
+//    private val numQuestions = Math.min((questions.size + 1)/2, 3)
+
+
+
+
+
+
+//    init{
+//
+//        //Initialize ViewModel properties
+//        randomizeQuestions()
+//        setQuestion()
+////        _questionsLiveData.value = questions
+////        _answersLiveData.value = answers
+//
+//    }
+
+//    private fun randomizeQuestions(){
+//        questions.shuffle()
+//        questionIndex = 0
+//
+//    }
+
+//
+//    private fun setQuestion(){
+//        currentQuestion = questions[questionIndex]
+//        answers = currentQuestion.answers.toMutableList()
+//
+//        answers.shuffle()
+//
+//    }
+//
+//    fun isAnswerCorrect(selectedAnswerIndex:Int):Boolean {
+//        return answers[selectedAnswerIndex] == currentQuestion.answers[0]
+//    }
+//
+//    fun moveToNextQuestion(){
+//        questionIndex++
+//        if(questionIndex < numQuestions){
+//            currentQuestion = questions[questionIndex]
+//            setQuestion()
+//        } else{
+//            //_eventGameFinish.value = true
+//        }
+//    }
+//    fun onGameFinishComplete(){
+//        //_eventGameFinish.value = false
+//
+//    }
+//
+//   fun isGameOver():Boolean{
+//       return (questionIndex >= numQuestions)
+//   }
+// LiveData to observe game over state
+private val _isGameOverLiveData = MutableLiveData<Boolean>()
+    val isGameOverLiveData: LiveData<Boolean>
+        get() = _isGameOverLiveData
+
+    fun moveToNextQuestion() {
+        if (currentQuestionIndex < questions.size - 1) {
+            currentQuestionIndex++
+            _questionsLiveData.value = questions
+            _answersLiveData.value = currentQuestion.answers.shuffled()
+            // Check if the game is now over and update the LiveData
+            if (isGameOver) {
+                _isGameOverLiveData.value = true
+            }
+        }
+    }
+    private fun randomizeAnswers() {
+        val currentQuestion = questions[currentQuestionIndex]
+        val answers = currentQuestion.answers
+        answers.shuffled()
+        questions.shuffle()
+    }
+
+    // Function to set up the current question and shuffle answers
+    fun setupCurrentQuestion() {
+        val currentQuestion = questions[currentQuestionIndex]
+        correctAnswerIndex = currentQuestion.correctAnswerIndex
+        currentAnswers = currentQuestion.answers.shuffled()
+    }
+
+    fun getCurrentAnswers(): List<String> {
+        return currentAnswers
+    }
+    fun shuffleAnswers() {
+        currentAnswers = currentQuestion.answers.shuffled()
+    }
+
+    fun isAnswerCorrect(answerIndex:Int):Boolean{
+        return answerIndex == currentQuestion.correctAnswerIndex
+    }
